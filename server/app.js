@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
   res.status(201).json({ message: "Connected to Backend!" });
 });
 
-app.get("/api/pets", async (req, res) => {
+app.get("/api/data", async (req, res) => {
   try {
     const docs = await dbFunctions.getAllDocs();
     res.json(docs);
@@ -41,7 +41,7 @@ app.get("/api/pets", async (req, res) => {
   }
 });
 
-app.post("/api/addpet", async (req, res) => {
+app.post("/api/adddata", async (req, res) => {
   let data = req.body;
 
   try {
@@ -53,7 +53,7 @@ app.post("/api/addpet", async (req, res) => {
   }
 });
 
-app.delete("/api/deletepet/:id", async (req, res) => {
+app.delete("/api/deletedata/:id", async (req, res) => {
   const id = req.params.id;
   let respObj = {};
 
@@ -70,6 +70,23 @@ app.delete("/api/deletepet/:id", async (req, res) => {
   }
 
   res.json(respObj);
+});
+
+app.put("/api/updatedata/:id", async (req, res) => {
+  const id = req.params.id;
+  const updatedValues = req.body;
+
+  if (id && ObjectId.isValid(id)) {
+    try {
+      await dbFunctions.updateDoc(id, updatedValues);
+      res.json({ message: "Lecture information updated successfully." });
+    } catch (err) {
+      console.error("# Update Error", err);
+      res.status(500).send({ error: err.name + ", " + err.message });
+    }
+  } else {
+    res.status(400).json({ error: "Invalid lecture." });
+  }
 });
 
 let server;

@@ -20,4 +20,10 @@ module.exports = {
     const filter = { _id: new ObjectId(id) };
     return await db.collection(coll).deleteOne(filter);
   },
+
+  updateDoc: async (id, updatedValues) => {
+    const filter = { _id: new ObjectId(id) };
+    const update = { $set: updatedValues };
+    await db.collection(coll6).updateOne(filter, update);
+  },
 };
