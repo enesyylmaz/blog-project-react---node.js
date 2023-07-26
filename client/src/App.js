@@ -19,30 +19,28 @@ const URL = "https://newblogprojectbackend.onrender.com";
 
 function App() {
   return (
-    <Router>
-      <div className="container mx-auto p-4">
-        <header className="flex items-center justify-center mb-4">
-          <div className="bg-white p-4 m-2 shadow-md rounded-md flex">
-            <img src={Logo} alt="Logo" className="h-12 mr-4" />
-            <nav>
-              <NavLink to="/" activeClassName="activeButton">
-                Home
-              </NavLink>
-              <NavLink to="/about" activeClassName="activeButton">
-                About Me
-              </NavLink>
-            </nav>
-          </div>
-        </header>
+    <div className="container mx-auto p-4">
+      <header className="flex items-center justify-center mb-4">
+        <div className="bg-white p-4 m-2 shadow-md rounded-md flex">
+          <img src={Logo} alt="Logo" className="h-12 mr-4" />
+          <nav>
+            <NavLink to="/" activeClassName="activeButton">
+              Home
+            </NavLink>
+            <NavLink to="/about" activeClassName="activeButton">
+              About Me
+            </NavLink>
+          </nav>
+        </div>
+      </header>
 
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/p/:id" element={<BlogPostPage />} />
-          <Route path="/about" element={<AboutMe />} />
-          <Route path="/addpost" element={<AddPost />} />
-        </Routes>
-      </div>
-    </Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/p/:id" element={<BlogPostPage />} />
+        <Route path="/about" element={<AboutMe />} />
+        <Route path="/addpost" element={<AddPost />} />
+      </Routes>
+    </div>
   );
 }
 
