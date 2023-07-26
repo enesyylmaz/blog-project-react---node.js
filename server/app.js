@@ -6,6 +6,7 @@ const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { ObjectId } = require("mongodb");
+const path = require("path");
 
 require("dotenv").config();
 
@@ -26,14 +27,6 @@ app.use(express.json());
 app.use(cors(corsOptions));
 
 // Routes
-
-app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
-
-app.get("/", (req, res) => {
-  res.status(201).json({ message: "Connected to Backend!" });
-});
 
 app.get("/api/data", async (req, res) => {
   try {
