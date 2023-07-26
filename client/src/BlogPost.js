@@ -1,16 +1,20 @@
 import React from "react";
 
-const BlogPost = ({ title, description, imageUrl, content }) => {
+const BlogPost = ({ title, description, image, content }) => {
   return (
     <div className="bg-white p-4 m-2 shadow-md rounded-md w-3/5">
       <img
-        src={imageUrl}
-        alt={title}
-        className="w-3/5 object-cover rounded-md mx-auto"
+        src={`${image}`}
+        alt="Base64 Image"
+        className="w-1/2 object-cover rounded-md mx-auto"
       />
-      <h2 className="text-xl font-bold mt-6">{title}</h2>
-      <p className="text-gray-600 mt-6">{description}</p>
-      <div className="mt-6">{content}</div>
+      <h2 className="text-3xl font-bold mt-6 text-center">{title}</h2>
+      <hr className="mt-6" />
+      <p className="text-gray-700 text-xl mt-6">{description}</p>
+      <hr className="mt-6" />
+      <div className="mt-6" style={{ whiteSpace: "pre-line" }}>
+        {content}
+      </div>
     </div>
   );
 };

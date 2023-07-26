@@ -4,36 +4,20 @@ import {
   Routes,
   Route,
   Link,
-  useParams,
   useLocation,
+  useParams,
 } from "react-router-dom";
+import axios from "axios";
 import "./style.css";
 import BlogHeader from "./BlogHeader";
 import BlogPost from "./BlogPost";
 import AboutMe from "./AboutMe";
 import Logo from "./images/logo.png";
+import AddPost from "./AddPost";
 
 const URL = "https://newblogprojectbackend.onrender.com";
 
 function App() {
-  const pages = [
-    {
-      id: 1,
-      title: "Blog Page 1",
-      description: "This is the description for Blog Page 1.",
-      imageUrl:
-        "https://i.kym-cdn.com/photos/images/original/002/271/481/214.png",
-      content: "This is the full content of Blog Page 2.",
-    },
-    {
-      id: 2,
-      title: "Blog Page 2",
-      description: "This is the description for Blog Page 2.",
-      imageUrl: "https://via.placeholder.com/200",
-      content: "This is the full content of Blog Page 2.",
-    },
-  ];
-
   return (
     <Router>
       <div className="container mx-auto p-4">
@@ -52,46 +36,111 @@ function App() {
         </header>
 
         <Routes>
-          <Route path="/" element={<HomePage pages={pages} />} />
-          <Route path="/p/:id" element={<BlogPostPage pages={pages} />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/p/:id" element={<BlogPostPage />} />
           <Route path="/about" element={<AboutMe />} />
+          <Route path="/addpost" element={<AddPost />} />
         </Routes>
       </div>
     </Router>
   );
 }
 
-function HomePage({ pages }) {
+function HomePage() {
+  const [pages, setPages] = useState([]);
+  const [loadedPages, setLoadedPages] = useState([]);
+  const [limit, setLimit] = useState(3);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPages();
+  }, []);
+
+  const fetchPages = async () => {
+    try {
+      const response = await axios.get(`${URL}/api/data?limit=${limit}`);
+      setPages(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching pages:", error);
+      setLoading(false);
+    }
+  };
+
+  const handleLoadMore = () => {
+    setLoadedPages((prevLoadedPages) =>
+      prevLoadedPages.concat(
+        pages.slice(prevLoadedPages.length, prevLoadedPages.length + limit)
+      )
+    );
+  };
+
+  useEffect(() => {
+    setLoadedPages(pages.slice(0, limit));
+  }, [pages, limit]);
+
   return (
     <div className="grid grid-cols-1 justify-items-center gap-8">
-      {pages.map((page) => (
-        <div key={page.id} className="w-1/2">
-          <Link to={`/p/${page.id}`}>
-            <BlogHeader
-              title={page.title}
-              description={page.description}
-              imageUrl={page.imageUrl}
-            />
-          </Link>
-        </div>
-      ))}
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        loadedPages.map((page) => (
+          <div key={page._id} className="w-1/2">
+            <Link to={`/p/${page._id}`}>
+              <BlogHeader
+                title={page.title}
+                description={page.description}
+                imageUrl={page.image}
+              />
+            </Link>
+          </div>
+        ))
+      )}
+      {pages.length > loadedPages.length && (
+        <button
+          className="mt-4 px-4 py-2 bg-white text-black rounded-md border border-black hover:bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
+          onClick={handleLoadMore}
+        >
+          Load More
+        </button>
+      )}
     </div>
   );
 }
 
-function BlogPostPage({ pages }) {
+function BlogPostPage() {
   const { id } = useParams();
-  const selectedPost = pages.find((page) => page.id === parseInt(id));
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPostById(id);
+  }, [id]);
+
+  const fetchPostById = async (postId) => {
+    try {
+      const response = await axios.get(`${URL}/api/data/${postId}`);
+      setSelectedPost(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching post:", error);
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-wrap justify-center">
-      {selectedPost && (
+      {loading ? (
+        <div>Loading...</div>
+      ) : selectedPost ? (
         <BlogPost
           title={selectedPost.title}
           description={selectedPost.description}
-          imageUrl={selectedPost.imageUrl}
+          image={selectedPost.image}
           content={selectedPost.content}
         />
+      ) : (
+        <div>Post not found!</div>
       )}
     </div>
   );

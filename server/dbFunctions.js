@@ -1,6 +1,6 @@
 const { ObjectId } = require("mongodb");
-const dbName = "animals";
-const coll = "pets";
+const dbName = "blog";
+const coll = "pages";
 let db;
 
 module.exports = {
@@ -25,5 +25,10 @@ module.exports = {
     const filter = { _id: new ObjectId(id) };
     const update = { $set: updatedValues };
     await db.collection(coll6).updateOne(filter, update);
+  },
+
+  getDocById: async (id) => {
+    const filter = { _id: new ObjectId(id) };
+    return await db.collection(coll).findOne(filter);
   },
 };

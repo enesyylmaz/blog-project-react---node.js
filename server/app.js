@@ -41,6 +41,25 @@ app.get("/api/data", async (req, res) => {
   }
 });
 
+app.get("/api/data/:id", async (req, res) => {
+  const id = req.params.id;
+
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "Invalid _id format." });
+  }
+
+  try {
+    const doc = await dbFunctions.getDocById(id);
+    if (!doc) {
+      return res.status(404).json({ error: "Document not found." });
+    }
+    res.json(doc);
+  } catch (err) {
+    console.error("# Get Single Data Error", err);
+    res.status(500).json({ error: err.name + ", " + err.message });
+  }
+});
+
 app.post("/api/adddata", async (req, res) => {
   let data = req.body;
 

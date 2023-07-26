@@ -2,7 +2,7 @@ import React from "react";
 
 const BlogHeader = ({ title, description, imageUrl }) => {
   return (
-    <div className="bg-white p-4 m-2 shadow-md rounded-md flex">
+    <div className="bg-white p-4 m-2 rounded-md flex border-b-2 border-gray-300">
       <img
         src={imageUrl}
         alt={title}
