@@ -15,7 +15,7 @@ import AboutMe from "./AboutMe";
 import Logo from "./images/logo.png";
 import AddPost from "./AddPost";
 
-const URL = "http://localhost:4000";
+const URL = "https://newblogprojectbackend.onrender.com";
 
 function App() {
   return (

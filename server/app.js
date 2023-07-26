@@ -11,7 +11,7 @@ require("dotenv").config();
 
 // Middleware
 const corsOptions = {
-  origin: "http://localhost:3000", // Frontend URI (ReactJS)
+  origin: "https://blogprojecttest.onrender.com", // Frontend URI (ReactJS)
 };
 app.use(bodyParser.json({ limit: "50mb", extended: true }));
 app.use(
