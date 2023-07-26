@@ -18,7 +18,6 @@ const AddPost = () => {
       return;
     }
 
-    // Convert image to base64
     let base64Image = "";
     try {
       const fileReader = new FileReader();
@@ -84,8 +83,7 @@ const AddPost = () => {
         placeholder="Content"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        style={{ width: "60%", minHeight: "100px" }} // Set the minimum height here
-        className="mt-4 px-4 py-2 h-96 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-200 resize-y"
+        className="w-3/5 mt-4 px-4 py-2 h-96 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-200 resize-y"
       />
       <button
         onClick={handleAddPost}
