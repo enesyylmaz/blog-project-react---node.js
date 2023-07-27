@@ -14,6 +14,7 @@ import BlogPost from "./BlogPost";
 import AboutMe from "./AboutMe";
 import Logo from "./images/logo.png";
 import AddPost from "./AddPost";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const URL = "https://newblogprojectbackend.onrender.com";
 
@@ -80,7 +81,9 @@ function HomePage() {
   return (
     <div className="grid grid-cols-1 justify-items-center gap-8">
       {loading ? (
-        <div>Loading...</div>
+        <div className="flex items-center justify-center">
+          <ClipLoader color="#000000" loading={loading} size={80} />
+        </div>
       ) : (
         loadedPages.map((page) => (
           <div key={page._id} className="w-1/2">
@@ -88,7 +91,7 @@ function HomePage() {
               <BlogHeader
                 title={page.title}
                 description={page.description}
-                imageUrl={page.image}
+                image={page.image}
               />
             </Link>
           </div>
@@ -116,12 +119,14 @@ function BlogPostPage() {
   }, [id]);
 
   const fetchPostById = async (postId) => {
+    setLoading(true);
+
     try {
       const response = await axios.get(`${URL}/api/data/${postId}`);
       setSelectedPost(response.data);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching post:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -129,7 +134,9 @@ function BlogPostPage() {
   return (
     <div className="flex flex-wrap justify-center">
       {loading ? (
-        <div>Loading...</div>
+        <div className="flex items-center justify-center">
+          <ClipLoader color="#000000" loading={loading} size={80} />
+        </div>
       ) : selectedPost ? (
         <BlogPost
           title={selectedPost.title}
