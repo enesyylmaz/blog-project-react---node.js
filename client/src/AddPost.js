@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const URL = "http://localhost:4000";
+const URL = "https://newblogprojectbackend.onrender.com";
 
 const AddPost = () => {
   const [title, setTitle] = useState("");
