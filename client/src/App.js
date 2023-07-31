@@ -14,6 +14,7 @@ import BlogPost from "./BlogPost";
 import AboutMe from "./AboutMe";
 import Logo from "./images/logo.png";
 import AddPost from "./AddPost";
+import AdminLogin from "./AdminLogin";
 import ClipLoader from "react-spinners/ClipLoader";
 
 const URL = "https://newblogprojectbackend.onrender.com";
@@ -39,7 +40,6 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/p/:id" element={<BlogPostPage />} />
         <Route path="/about" element={<AboutMe />} />
-        <Route path="/addpost" element={<AddPost />} />
       </Routes>
     </div>
   );

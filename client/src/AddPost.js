@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const URL = "https://newblogprojectbackend.onrender.com";
 
@@ -10,6 +11,15 @@ const AddPost = () => {
   const [content, setContent] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isAdminAuthenticated = localStorage.getItem("isAdminAuthenticated");
+
+    if (!isAdminAuthenticated) {
+      navigate("/admin");
+    }
+  }, [navigate]);
 
   const handleAddPost = async () => {
     if (!title || !description || !image || !content) {
@@ -55,7 +65,7 @@ const AddPost = () => {
 
   const handlePopupClose = () => {
     setShowPopup(false);
-    window.location.reload();
+    navigate("/admin");
   };
 
   return (

@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const database = require("./database");
 const dbFunctions = require("./dbFunctions");
+const adminFunctions = require("./adminFunctions");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -105,6 +106,83 @@ app.put("/api/updatedata/:id", async (req, res) => {
   }
 });
 
+app.get("/api/admin", async (req, res) => {
+  try {
+    const docs = await adminFunctions.getAllDocs();
+    res.json(docs);
+  } catch (err) {
+    console.error("# Get Error", err);
+    res.status(500).send({ error: err.name + ", " + err.message });
+  }
+});
+
+app.get("/api/admin/:id", async (req, res) => {
+  const id = req.params.id;
+
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "Invalid _id format." });
+  }
+
+  try {
+    const doc = await adminFunctions.getDocById(id);
+    if (!doc) {
+      return res.status(404).json({ error: "Document not found." });
+    }
+    res.json(doc);
+  } catch (err) {
+    console.error("# Get Single Data Error", err);
+    res.status(500).json({ error: err.name + ", " + err.message });
+  }
+});
+
+app.post("/api/addadmin", async (req, res) => {
+  let data = req.body;
+
+  try {
+    data = await adminFunctions.addDoc(data);
+    res.json(data);
+  } catch (err) {
+    console.error("# Post Error", err);
+    res.status(500).send({ error: err.name + ", " + err.message });
+  }
+});
+
+app.delete("/api/deleteadmin/:id", async (req, res) => {
+  const id = req.params.id;
+  let respObj = {};
+
+  if (id && ObjectId.isValid(id)) {
+    try {
+      respObj = await adminFunctions.deleteDoc(id);
+    } catch (err) {
+      console.error("# Delete Error", err);
+      res.status(500).send({ error: err.name + ", " + err.message });
+      return;
+    }
+  } else {
+    respObj = { message: "Data not deleted; the id to delete is not valid!" };
+  }
+
+  res.json(respObj);
+});
+
+app.put("/api/updateadmin/:id", async (req, res) => {
+  const id = req.params.id;
+  const updatedValues = req.body;
+
+  if (id && ObjectId.isValid(id)) {
+    try {
+      await adminFunctions.updateDoc(id, updatedValues);
+      res.json({ message: "Lecture information updated successfully." });
+    } catch (err) {
+      console.error("# Update Error", err);
+      res.status(500).send({ error: err.name + ", " + err.message });
+    }
+  } else {
+    res.status(400).json({ error: "Invalid lecture." });
+  }
+});
+
 let server;
 let conn;
 
@@ -112,6 +190,7 @@ let conn;
   try {
     conn = await database();
     await dbFunctions.getDb(conn);
+    await adminFunctions.getDb(conn);
     const PORT = process.env.PORT;
     server = app.listen(PORT, () => {
       console.log(`App is listening on PORT ${PORT}`);
