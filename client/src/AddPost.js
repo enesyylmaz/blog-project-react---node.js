@@ -13,6 +13,29 @@ const AddPost = () => {
   const [popupMessage, setPopupMessage] = useState("");
   const navigate = useNavigate();
 
+  const [currentDate, setCurrentDate] = useState("");
+
+  useEffect(() => {
+    const getCurrentDate = () => {
+      const date = new Date();
+      date.setUTCHours(date.getUTCHours());
+      const options = {
+        timeZone: "UTC",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        fractionalSecondDigits: 3,
+      };
+      const formattedDate = date.toISOString();
+      setCurrentDate(formattedDate);
+    };
+
+    getCurrentDate();
+  }, []);
+
   useEffect(() => {
     const isAdminAuthenticated = localStorage.getItem("isAdminAuthenticated");
 
@@ -49,6 +72,7 @@ const AddPost = () => {
       description: description,
       image: base64Image,
       content: content,
+      date: currentDate,
     };
 
     try {
@@ -65,7 +89,7 @@ const AddPost = () => {
 
   const handlePopupClose = () => {
     setShowPopup(false);
-    navigate("/admin");
+    navigate("/");
   };
 
   return (

@@ -8,8 +8,13 @@ module.exports = {
     db = await client.db(dbName);
   },
 
-  getAllDocs: async () => {
-    return await db.collection(coll).find().toArray();
+  getAllDocs: async (offset = 0, limit = 3) => {
+    let query = db.collection(coll).find();
+    if (offset > 0) {
+      query = query.skip(offset);
+    }
+    query = query.limit(limit);
+    return await query.toArray();
   },
 
   addDoc: async (doc) => {

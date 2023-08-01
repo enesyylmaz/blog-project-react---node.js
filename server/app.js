@@ -30,8 +30,10 @@ app.use(cors(corsOptions));
 // Routes
 
 app.get("/api/data", async (req, res) => {
+  const offset = parseInt(req.query.offset) || 0; // Parse offset from query parameter
+  const limit = 3; // Set the number of documents to fetch
   try {
-    const docs = await dbFunctions.getAllDocs();
+    const docs = await dbFunctions.getAllDocs(offset, limit);
     res.json(docs);
   } catch (err) {
     console.error("# Get Error", err);

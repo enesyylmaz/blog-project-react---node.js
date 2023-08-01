@@ -50,6 +50,7 @@ function HomePage() {
   const [loadedPages, setLoadedPages] = useState([]);
   const [limit, setLimit] = useState(3);
   const [loading, setLoading] = useState(true);
+  const [moreDataAvailable, setMoreDataAvailable] = useState(true);
 
   useEffect(() => {
     fetchPages();
@@ -57,8 +58,8 @@ function HomePage() {
 
   const fetchPages = async () => {
     try {
-      const response = await axios.get(`${URL}/api/data?limit=${limit}`);
-      setPages(response.data);
+      const response = await axios.get(`${URL}/api/data`);
+      setLoadedPages(response.data);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching pages:", error);
@@ -66,44 +67,49 @@ function HomePage() {
     }
   };
 
-  const handleLoadMore = () => {
-    setLoadedPages((prevLoadedPages) =>
-      prevLoadedPages.concat(
-        pages.slice(prevLoadedPages.length, prevLoadedPages.length + limit)
-      )
-    );
+  const handleLoadMore = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${URL}/api/data?offset=${loadedPages.length}`
+      );
+      setLoadedPages((prevLoadedPages) => [
+        ...prevLoadedPages,
+        ...response.data,
+      ]);
+      setMoreDataAvailable(response.data.length > 0);
+    } catch (error) {
+      console.error("Error fetching more pages:", error);
+    }
+    setLoading(false);
   };
-
-  useEffect(() => {
-    setLoadedPages(pages.slice(0, limit));
-  }, [pages, limit]);
 
   return (
     <div className="grid grid-cols-1 justify-items-center gap-8">
-      {loading ? (
-        <div className="flex items-center justify-center">
-          <ClipLoader color="#000000" loading={loading} size={80} />
+      {loadedPages.map((page) => (
+        <div key={page._id} className="w-1/2">
+          <Link to={`/p/${page._id}`}>
+            <BlogHeader
+              title={page.title}
+              description={page.description}
+              image={page.image}
+              date={page.date}
+            />
+          </Link>
         </div>
-      ) : (
-        loadedPages.map((page) => (
-          <div key={page._id} className="w-1/2">
-            <Link to={`/p/${page._id}`}>
-              <BlogHeader
-                title={page.title}
-                description={page.description}
-                image={page.image}
-              />
-            </Link>
-          </div>
-        ))
-      )}
-      {pages.length > loadedPages.length && (
+      ))}
+      {!loading && moreDataAvailable && (
         <button
           className="mt-4 px-4 py-2 bg-white text-black rounded-md border border-black hover:bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
           onClick={handleLoadMore}
         >
           Load More
         </button>
+      )}
+      {loading && ( // Display the loading spinner if loading
+        <div className="flex items-center justify-center">
+          <ClipLoader color="#000000" loading={loading} size={80} />
+        </div>
       )}
     </div>
   );
@@ -143,6 +149,7 @@ function BlogPostPage() {
           description={selectedPost.description}
           image={selectedPost.image}
           content={selectedPost.content}
+          date={selectedPost.date}
         />
       ) : (
         <div>Post not found!</div>
