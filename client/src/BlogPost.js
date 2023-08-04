@@ -12,9 +12,7 @@ const BlogPost = ({ title, description, image, content }) => {
       <hr className="mt-6" />
       <p className="text-gray-700 text-xl mt-6">{description}</p>
       <hr className="mt-6" />
-      <div className="mt-6" style={{ whiteSpace: "pre-line" }}>
-        {content}
-      </div>
+      <div dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   );
 };

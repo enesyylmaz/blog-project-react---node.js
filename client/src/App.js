@@ -35,7 +35,6 @@ function App() {
           </nav>
         </div>
       </header>
-
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/p/:id" element={<BlogPostPage />} />
@@ -88,14 +87,14 @@ function HomePage() {
     <div className="grid grid-cols-1 justify-items-center gap-8">
       {loadedPages.map((page) => (
         <div key={page._id} className="w-1/2">
-          <Link to={`/p/${page._id}`}>
-            <BlogHeader
-              title={page.title}
-              description={page.description}
-              image={page.image}
-              date={page.date}
-            />
-          </Link>
+          <BlogHeader
+            title={page.title}
+            description={page.description}
+            image={page.image}
+            date={page.date}
+            tags={page.tags}
+            _id={page._id}
+          />
         </div>
       ))}
       {!loading && moreDataAvailable && (
@@ -106,7 +105,7 @@ function HomePage() {
           Load More
         </button>
       )}
-      {loading && ( // Display the loading spinner if loading
+      {loading && (
         <div className="flex items-center justify-center">
           <ClipLoader color="#000000" loading={loading} size={80} />
         </div>
